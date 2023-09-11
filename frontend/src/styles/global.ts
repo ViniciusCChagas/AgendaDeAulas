@@ -66,31 +66,32 @@ button {
 a {
     transition: color 0.2s;
     &:hover{
-        color: var(--yellow) !important;
+      cursor: pointer;
+      filter: brightness(0.8);
     }
 }
 
-input, textarea {
-    resize: none;
+input,
+	textarea {
+		resize: none;
 
-	min-height: 3.5rem;
-	font-size: 1rem;
+		min-height: 3rem;
+		font-size: 1rem;
 
-	margin: 0.5rem 0;
-	padding: 0.5rem 1rem;
+		margin: 0.5rem 0;
+		padding: 0.5rem 1rem;
 
-	color: var(--dark-text);
-	background: var(--white);
+		color: var(--dark-text);
+		background: var(--white);
 
-	border: 0.125rem solid var(--light-border);
-	border-radius: 0.3rem;
-    outline: 0;
+		border: 0.125rem solid var(--light-border);
+		border-radius: 0.3rem;
+		outline: 0;
 
-    &:focus{
-        border-color: var(--dark)
-    }
-
-}
+		&:focus {
+			border-color: var(--dark);
+		}
+	}
 
 button {
 	height: 2.8rem;
@@ -176,5 +177,19 @@ button {
   }
   .ReactModal__Body--open {
     overflow-y: hidden;
+  }
+  .swal12-confirm{
+    background: var(--yellow) !important;
+  }
+
+  .fc-event{
+    overflow: hidden !important;
+    color: var(--black) !important;
+  }
+  .fc-daygrid-event, .fc-v-event, .fc-event-main{
+    color: var(--black) !important;
+    background-color: unset !important;
+    border: unset !important;
+    box-shadow: unset !important;
   }
 `;

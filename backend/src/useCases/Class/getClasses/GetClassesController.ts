@@ -15,10 +15,13 @@ class GetClassesController {
 	): Promise<Response> {
 		const { initialDate, finalDate } = request.query;
 
+		const { studentId } = request.session['user'];
+
 		try {
 			const classes = await this.getClassUseCase.execute(
 				new Date(initialDate),
-				new Date(finalDate)
+				new Date(finalDate),
+				studentId
 			);
 
 			return response.status(200).json(classes);

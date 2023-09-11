@@ -5,6 +5,7 @@ interface IStudentRepository {
 	createNewStudent(newStudent: IParamsCreateNewStudentDto): Promise<IStudent>;
 	findStudentById(id: string): Promise<IStudent>;
 	findStudentByEmail(email: string): Promise<IStudent>;
+	deleteClassesFromStudentByClassId(classId: string): Promise<IStudent[]>;
 	addClassToStudent(studentId: string, classId: string): Promise<IStudent>;
 }
 

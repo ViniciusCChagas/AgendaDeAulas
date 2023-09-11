@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { object, string } from 'yup';
 import { ICreateSessionDto } from '../../models/dtos/ICreateSessionDto';
 import { CreateSessionUseCase } from './CreateSessionUseCase';
 
@@ -11,6 +12,14 @@ class CreateSessionController {
 	async handle(request: Request<any, any, ICreateSessionDto>, response: Response) {
 		try {
 			const { email } = request.body;
+
+			const paramsValidationSchema = object({
+				email: string().required().label('Email').email(),
+			});
+
+			await paramsValidationSchema.validate({
+				email,
+			});
 
 			const userSession = await this.createSessionUseCase.execute(email);
 

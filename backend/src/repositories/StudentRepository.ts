@@ -5,6 +5,20 @@ import { IStudent } from '../models/interfaces/IStudent';
 import { IStudentRepository } from './interfaces/IStudentRepository';
 
 class StudentRepository implements IStudentRepository {
+	async deleteClassesFromStudentByClassId(classId: string): Promise<IStudent[]> {
+		const id = new ObjectId(classId);
+		const students = await Student.find({
+			classes: id,
+		});
+
+		for (const student of students) {
+			const index = student.classes.indexOf(id);
+			student.classes.splice(index, 1);
+			student.save();
+		}
+
+		return students;
+	}
 	async createNewStudent(newStudent: IParamsCreateNewStudentDto): Promise<IStudent> {
 		const createdStudent = new Student({
 			_id: new ObjectId(),

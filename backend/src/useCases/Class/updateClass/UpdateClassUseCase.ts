@@ -1,18 +1,18 @@
-import { IParamsCreateNewClassDto } from '../../../models/dtos/IParamsCreateNewClassDto';
+import { IParamsUpdateClassDto } from '../../../models/dtos/IParamsUpdateClassDto';
 import { IClassRepository } from '../../../repositories/interfaces/IClassRepository';
 import { isHoliday, weekDays } from '../../../utils/holidays';
 
-class CreateNewClassUseCase {
+class UpdateClassUseCase {
 	private classRepository: IClassRepository;
 
 	constructor(classRepository: IClassRepository) {
 		this.classRepository = classRepository;
 	}
 
-	async execute(params: IParamsCreateNewClassDto) {
-		const { name, isOnlineClass, startDate, endDate } = params;
+	async execute(params: IParamsUpdateClassDto) {
+		const { id, name, isOnlineClass, startDate, endDate } = params;
 
-		if (startDate.getTime() > endDate.getTime()) {
+    if (startDate.getTime() > endDate.getTime()) {
 			throw new Error('Data de inicio não pode ser maior que data de fim!');
 		}
 
@@ -42,19 +42,22 @@ class CreateNewClassUseCase {
 		const conflictingClasses =
 			await this.classRepository.findConflictingClassesByDate(startDate, endDate);
 
-		if (conflictingClasses.length > 0) {
+      const filteredConflictingClasses =conflictingClasses.filter((conflictingClass) => conflictingClass._id.toString() !== id);
+
+		if (filteredConflictingClasses.length > 0) {
 			throw new Error('Existe um conflito entre as datas e horarios de aulas!');
 		}
 
-		const createdClass = await this.classRepository.createNewClass({
+		const updatedClass = await this.classRepository.updateClass({
+			id,
 			name,
 			isOnlineClass,
 			startDate,
 			endDate,
 		});
 
-		return createdClass;
+		return updatedClass;
 	}
 }
 
-export { CreateNewClassUseCase };
+export { UpdateClassUseCase };

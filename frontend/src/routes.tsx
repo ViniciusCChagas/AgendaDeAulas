@@ -1,8 +1,9 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { AgendaProvider } from './hooks/useAgenda';
-import { IndexPage } from './pages/AdminPage';
+import { AdminPage } from './pages/AdminPage';
 import { LoginPage } from './pages/LoginPage';
 import { PageNotFound } from './pages/PageNotFound';
+import { StudentPage } from './pages/StudentPage';
 
 export function AppRoutes() {
 	const router = createBrowserRouter([
@@ -12,10 +13,19 @@ export function AppRoutes() {
 			errorElement: <PageNotFound />,
 		},
 		{
+			path: '/admin',
+			element: (
+				<AgendaProvider>
+					<AdminPage />
+				</AgendaProvider>
+			),
+			errorElement: <PageNotFound />,
+		},
+		{
 			path: '/',
 			element: (
 				<AgendaProvider>
-					<IndexPage />
+					<StudentPage />
 				</AgendaProvider>
 			),
 			errorElement: <PageNotFound />,

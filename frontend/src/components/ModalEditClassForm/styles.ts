@@ -39,8 +39,16 @@ export const ModalForm = styled.form`
 
 	footer {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
+
+		justify-content: space-between;
+
 		padding: 1.5rem 1.75rem;
+
+		button {
+			width: 100%;
+			margin: auto 1rem;
+		}
 	}
 `;
 

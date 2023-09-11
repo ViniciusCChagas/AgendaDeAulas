@@ -1,11 +1,30 @@
 import { ObjectId } from 'mongodb';
 import { Class } from '../models/Class';
 import { IParamsCreateNewClassDto } from '../models/dtos/IParamsCreateNewClassDto';
+import { IParamsUpdateClassDto } from '../models/dtos/IParamsUpdateClassDto';
 import { IClass } from '../models/interfaces/IClass';
 import { IClassRepository } from './interfaces/IClassRepository';
 
 class ClassRepository implements IClassRepository {
+	async updateClass(newClassParam: IParamsUpdateClassDto): Promise<IClass> {
+		newClassParam.startDate.setHours(newClassParam.startDate.getHours() - 3);
+		newClassParam.endDate.setHours(newClassParam.endDate.getHours() - 3);
+
+		const newClass = await Class.findById(newClassParam.id);
+
+		newClass.name = newClassParam.name;
+		newClass.isOnlineClass = newClassParam.isOnlineClass;
+		newClass.startDate = newClassParam.startDate;
+		newClass.endDate = newClassParam.endDate;
+
+		newClass.save();
+
+		return newClass;
+	}
 	async createNewClass(newClass: IParamsCreateNewClassDto): Promise<IClass> {
+		newClass.startDate.setHours(newClass.startDate.getHours() - 3);
+		newClass.endDate.setHours(newClass.endDate.getHours() - 3);
+
 		const createdClass = new Class({
 			_id: new ObjectId(),
 			name: newClass.name,
@@ -20,8 +39,18 @@ class ClassRepository implements IClassRepository {
 		return createdClass;
 	}
 
+	async deleteClassById(id: string): Promise<IClass> {
+		const classToBeDeleted = await Class.findById(id);
+
+		classToBeDeleted.deleteOne();
+
+		return classToBeDeleted;
+	}
+
 	async batchCreateNewClasses(classes: IClass[]): Promise<IClass[]> {
 		const classesToBeCreated = classes.map((newClass) => {
+			newClass.startDate.setHours(newClass.startDate.getHours() - 3);
+			newClass.endDate.setHours(newClass.endDate.getHours() - 3);
 			const createdClass = new Class({
 				_id: new ObjectId(),
 				name: newClass.name,

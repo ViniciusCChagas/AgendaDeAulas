@@ -67,3 +67,8 @@ export const CheckBoxContainer = styled.div`
 		margin-right: 0.5rem;
 	}
 `;
+
+export const TimeGroup = styled.div`
+	display: flex;
+	justify-content: space-between;
+`;

@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
 import Modal from 'react-modal';
 import { useAgenda } from '../../hooks/useAgenda';
-import { getDatetimeLocalDateValue } from '../../utils';
 import { CustomInput } from '../CustomInput';
 import { LoadingButton } from '../LoadingButton';
-import { Container, ModalForm } from './styles';
+import { Container, ModalForm, TimeGroup } from './styles';
 
 Modal.setAppElement('#root');
 
@@ -22,29 +21,36 @@ const inputConfig = {
 			message: 'O Nome deve ter no máximo 120 caracteres',
 		},
 	},
-	startDate: {
+	startDay: {
 		required: 'Campo obrigatório',
 	},
-	endDate: {
+	endDay: {
+		required: 'Campo obrigatório',
+	},
+	startHour: {
+		required: 'Campo obrigatório',
+	},
+	endHour: {
 		required: 'Campo obrigatório',
 	},
 };
 
-interface ModalCreateClassFormValues {
+interface ModalBatchCreateClassFormValues {
 	name: string;
 	isOnlineClass: boolean;
-	startDate: string;
-	endDate: string;
+	startDay: string;
+	endDay: string;
+	startHour: string;
+	endHour: string;
 }
 
-function ModalCreateClassForm() {
+function ModalBatchCreateClassForm() {
 	const [isLoading, setIsLoading] = useState(false);
 	const {
-		createNewClassModalIsOpen,
-		closeCreateNewClassModal,
-		selectedDateInterval,
-		createNewClass,
+		batchCreateNewClassModalIsOpen,
+		closeBatchCreateNewClassModal,
 		getAndUpdateClasses,
+		batchCreateNewClass,
 	} = useAgenda();
 
 	const {
@@ -52,25 +58,15 @@ function ModalCreateClassForm() {
 		handleSubmit,
 		formState: { errors },
 		reset,
-		setValue,
-	} = useForm<ModalCreateClassFormValues>();
+	} = useForm<ModalBatchCreateClassFormValues>();
 
-	useEffect(() => {
-		reset();
-		setValue('startDate', getDatetimeLocalDateValue(selectedDateInterval.startDate));
-		setValue('endDate', getDatetimeLocalDateValue(selectedDateInterval.endDate));
-	}, [selectedDateInterval]);
-
-	async function handleCreateNewClassFormSubmit(data: ModalCreateClassFormValues) {
+	async function handleCreateNewClassFormSubmit(data: ModalBatchCreateClassFormValues) {
 		setIsLoading(true);
-		await createNewClass({
-			...data,
-			startDate: new Date(data.startDate),
-			endDate: new Date(data.endDate),
-		});
+		
+		await batchCreateNewClass(data);
 
 		await getAndUpdateClasses();
-		closeCreateNewClassModal();
+		closeBatchCreateNewClassModal();
 		reset();
 		setIsLoading(false);
 	}
@@ -78,18 +74,18 @@ function ModalCreateClassForm() {
 	return (
 		<Container>
 			<Modal
-				isOpen={createNewClassModalIsOpen}
-				onRequestClose={closeCreateNewClassModal}
+				isOpen={batchCreateNewClassModalIsOpen}
+				onRequestClose={closeBatchCreateNewClassModal}
 				overlayClassName='react-modal-overlay'
 				className='react-modal-content'
 			>
 				<ModalForm onSubmit={handleSubmit(handleCreateNewClassFormSubmit)}>
 					<header>
-						<h2>Adicionar Aula</h2>
+						<h2>Adicionar lote de Aula</h2>
 						<button
 							type='button'
 							className='react-modal-close'
-							onClick={closeCreateNewClassModal}
+							onClick={closeBatchCreateNewClassModal}
 						>
 							<FaTimes color='var(--white)' />
 						</button>
@@ -113,22 +109,40 @@ function ModalCreateClassForm() {
 						/>
 
 						<CustomInput
-							label='Inicio:'
-							name='startDate'
-							type='datetime-local'
+							label='Inicio do lote:'
+							name='startDay'
+							type='date'
 							register={register}
-							errorMessage={errors.startDate?.message}
-							validationConfig={inputConfig['startDate']}
+							errorMessage={errors.startDay?.message}
+							validationConfig={inputConfig['startDay']}
 						/>
 
 						<CustomInput
-							label='Fim:'
-							name='endDate'
-							type='datetime-local'
+							label='Fim do lote:'
+							name='endDay'
+							type='date'
 							register={register}
-							errorMessage={errors.endDate?.message}
-							validationConfig={inputConfig['endDate']}
+							errorMessage={errors.endDay?.message}
+							validationConfig={inputConfig['endDay']}
 						/>
+						<TimeGroup>
+							<CustomInput
+								label='Inicio da Aula:'
+								name='startHour'
+								type='time'
+								register={register}
+								errorMessage={errors.startHour?.message}
+								validationConfig={inputConfig['startHour']}
+							/>
+							<CustomInput
+								label='Fim da Aula:'
+								name='endHour'
+								type='time'
+								register={register}
+								errorMessage={errors.endHour?.message}
+								validationConfig={inputConfig['endHour']}
+							/>
+						</TimeGroup>
 					</main>
 					<footer>
 						<LoadingButton isLoading={isLoading}>Adicionar</LoadingButton>
@@ -139,4 +153,4 @@ function ModalCreateClassForm() {
 	);
 }
 
-export { ModalCreateClassForm };
+export { ModalBatchCreateClassForm };

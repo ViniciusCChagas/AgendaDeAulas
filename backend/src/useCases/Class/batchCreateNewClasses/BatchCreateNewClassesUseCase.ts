@@ -22,11 +22,11 @@ class BatchCreateNewClassesUseCase {
 		const startDate = new Date(`${startDay} ${startHour}:00`);
 		const endDate = new Date(`${endDay} ${endHour}:00`);
 
-    if (startDate > endDate) {
+		if (startDate.getTime() > endDate.getTime()) {
 			throw new Error('Data de inicio não pode ser maior que data de fim!');
 		}
 
-		if (startDate < new Date()) {
+		if (startDate.getTime() < new Date().getTime()) {
 			throw new Error('Data de inicio não pode ser menor que data atual!');
 		}
 
@@ -34,18 +34,24 @@ class BatchCreateNewClassesUseCase {
 
 		const classesToBeCreated: IClass[] = [];
 
+		console.log({ startDate });
+		console.log({ endDate });
+
+		const newClassStartHour = startDate.getHours();
+		const newClassStartMinutes = startDate.getMinutes();
+
+		const newClassEndHour = endDate.getHours();
+		const newClassEndMinutes = endDate.getMinutes();
+
 		while (currentDate.getTime() <= endDate.getTime()) {
-			const startHour = startDate.getHours();
-			const startMinutes = startDate.getMinutes();
-
-			const endHour = endDate.getHours();
-			const endMinutes = endDate.getMinutes();
-
 			const newStartDate = set(currentDate, {
-				hours: startHour,
-				minutes: startMinutes,
+				hours: newClassStartHour,
+				minutes: newClassStartMinutes,
 			});
-			const newEndDate = set(currentDate, { hours: endHour, minutes: endMinutes });
+			const newEndDate = set(currentDate, {
+				hours: newClassEndHour,
+				minutes: newClassEndMinutes,
+			});
 
 			const isNewStartDateHoliday = isHoliday(newStartDate);
 			const isNewEndDateHoliday = isHoliday(newEndDate);
@@ -99,6 +105,8 @@ class BatchCreateNewClassesUseCase {
 				'Não foi possível criar as aulas pois elas conflitam com aulas já existentes.'
 			);
 		}
+
+		console.log({ before: classesToBeCreated });
 
 		const createdClasses = await this.classRepository.batchCreateNewClasses(
 			classesToBeCreated

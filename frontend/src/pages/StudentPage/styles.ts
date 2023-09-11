@@ -22,8 +22,13 @@ export const Container = styled.div`
 	}
 
 	& > h1 {
-		margin: 2rem 1rem;
+		margin: 2rem 1rem 0 1rem;
 
+		color: var(--dark-text);
+	}
+
+	& > h3 {
+		margin: 2rem 1rem;
 		color: var(--dark-text);
 	}
 `;

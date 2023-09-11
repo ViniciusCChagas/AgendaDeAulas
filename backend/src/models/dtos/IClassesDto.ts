@@ -9,6 +9,7 @@ interface IClassesDto {
 	endDate: Date;
 	studentsCount: number;
 	weather?: IWeather;
+	isRegistered?: boolean;
 }
 
 export { IClassesDto };

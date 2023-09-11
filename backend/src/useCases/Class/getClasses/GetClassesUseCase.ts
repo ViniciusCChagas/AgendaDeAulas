@@ -8,7 +8,11 @@ class GetClassesUseCase {
 		this.classRepository = classRepository;
 	}
 
-	async execute(initialDate: Date, finalDate: Date): Promise<IClassesDto[]> {
+	async execute(
+		initialDate: Date,
+		finalDate: Date,
+		studentId: string
+	): Promise<IClassesDto[]> {
 		const classes = await this.classRepository.getClassesByDate(
 			initialDate,
 			finalDate
@@ -26,7 +30,19 @@ class GetClassesUseCase {
 				endDate: classItem.endDate,
 				studentsCount: classItem.students.length,
 				weather: null,
+				isRegistered: false,
 			};
+
+			const isRegistered = classItem.students.some(
+				(student) => student._id.toString() === studentId
+			);
+
+			if (isRegistered) {
+				newClassItem = {
+					...newClassItem,
+					isRegistered,
+				};
+			}
 
 			if (classItem.isOnlineClass) {
 				return newClassItem;

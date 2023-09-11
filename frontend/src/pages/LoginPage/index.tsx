@@ -35,8 +35,6 @@ function LoginPage() {
 	const navigate = useNavigate();
 	const [isButtonLoading, setIsButtonLoading] = useState(false);
 
-	const {} = useForm();
-
 	const {
 		register,
 		handleSubmit,
@@ -58,6 +56,11 @@ function LoginPage() {
 		}
 
 		reset();
+		if (data.email.includes('@aprovatotal.com.br')) {
+			navigate('/admin');
+			return;
+		}
+		
 		navigate('/');
 		return;
 	}
